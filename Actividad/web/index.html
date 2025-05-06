@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Actividad Hacker</title>
+    <script type="text/javascript" src="/eel.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="contenedor">
+        <div id="principal">
+            <h1>🧠 Propagación del Hacker</h1>
+            <div id="bloqueoPanel">
+                <input type="text" id="nodoBloquear" placeholder="Nodo a bloquear">
+                <button onclick="paso()">Siguiente paso</button>
+            </div>
+            <div id="network" style="height:600px;"></div>
+        </div>
+    
+        <div id="sidebar">
+            <div id="estadisticas">
+                <h3>📈 Estadísticas</h3>
+                <p id="stats"></p>
+            </div>
+            <div id="tablaCentralidades">
+                <h3>🔍 Centralidades</h3>
+                <table id="centralidadesTabla">
+                    <tr><th>Nodo</th><th>Grado</th><th>Intermediación</th></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div id="network" style="height:600px;"></div>
+    <script src="script.js"></script>
+    
+</body>
+</html>

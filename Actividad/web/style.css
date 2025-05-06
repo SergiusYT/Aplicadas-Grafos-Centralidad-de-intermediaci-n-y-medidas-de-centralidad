@@ -1,0 +1,55 @@
+body {
+    background-color: #111;
+    color: #0f0;
+    font-family: 'Courier New', monospace;
+    text-align: center;
+}
+#bloqueoPanel {
+    margin: 20px;
+}
+input, button {
+    padding: 10px;
+    font-size: 16px;
+    margin: 5px;
+    background: #000;
+    color: #0f0;
+    border: 1px solid #0f0;
+}
+
+
+
+#contenedor {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+#principal {
+    flex: 1;
+    margin-right: 20px;
+}
+
+#sidebar {
+    width: 300px;
+    background-color: #000;
+    border-left: 2px solid #0f0;
+    padding: 10px;
+    color: #0f0;
+    font-size: 14px;
+    max-height: 600px;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+}
+
+#tablaCentralidades table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#tablaCentralidades th, #tablaCentralidades td {
+    border: 1px solid #0f0;
+    padding: 4px;
+    text-align: center;
+}

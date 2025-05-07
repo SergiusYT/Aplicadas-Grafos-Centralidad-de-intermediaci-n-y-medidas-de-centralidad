@@ -1,17 +1,25 @@
 import eel
 import networkx as nx
 from grafo import construir_grafo
+import random
 
 # Iniciar Eel
 eel.init('web')
 
 G = construir_grafo()
-infectados = {'A'}
+infectados = {'A1'}
 bloqueados = set()
-objetivo = 'H'
+
+objetivos = []
+
+# Seleccionar nodos objetivos con grado >= 2
+nodos_candidatos = [n for n in G.nodes if G.degree(n) >= 2 and n != 'A1']
+objetivos = random.sample(nodos_candidatos, 3)
+
 
 # 💡 Fijar posiciones UNA SOLA VEZ
-posiciones = nx.spring_layout(G, seed=42)
+seed = random.randint(0, 100000)
+posiciones = nx.spring_layout(G, seed=seed)
 
 @eel.expose
 def obtener_estado():
@@ -22,6 +30,8 @@ def obtener_estado():
             color = 'red'
         elif any(vecino in infectados for vecino in G.neighbors(nodo)):
             color = 'orange'
+        elif nodo in objetivos: 
+            color = 'white'  
         nodos.append({
             'id': nodo,
             'x': posiciones[nodo][0],
@@ -30,6 +40,7 @@ def obtener_estado():
         })
     edges = [{'from': u, 'to': v} for u, v in G.edges]
     return {'nodes': nodos, 'edges': edges}
+
 
 
 # Calcula una vez en la carga del grafo
@@ -72,21 +83,35 @@ def siguiente_paso(bloqueo=None):
         nuevos.update([v for v in G.neighbors(nodo) if v not in infectados and v not in bloqueados])
     infectados.update(nuevos)
 
-    if objetivo in infectados:
-        puntuacion -= 20
-        return "hackeo"
+    infectados_objetivos = [obj for obj in objetivos if obj in infectados]
+    protegidos_objetivos = [obj for obj in objetivos if obj not in infectados]
+
+    if len(infectados_objetivos) == len(objetivos):
+        puntuacion -= 30
+        return f"todos_infectados:{objetivos}"
+
+    if len(infectados_objetivos) > 0:
+        puntuacion -= 10 * len(infectados_objetivos)
+
     if not nuevos:
-        puntuacion += 15
-        return "detenido"
+        puntuacion += 15 * len(protegidos_objetivos)
+        return f"detenido:{protegidos_objetivos}"
+
     return "continuar"
+
 
 @eel.expose
 def obtener_estadisticas():
+    infectados_objetivos = [obj for obj in objetivos if obj in infectados]
+    en_peligro = [obj for obj in objetivos if any(vec in infectados for vec in G.neighbors(obj)) and obj not in infectados]
+
     return {
         'infectados': len(infectados),
         'bloqueados': len(bloqueados),
         'puntuacion': puntuacion,
-        'nodo_critico': max(centralidad_intermediacion, key=centralidad_intermediacion.get)
+        'nodo_critico': max(centralidad_intermediacion, key=centralidad_intermediacion.get),
+        'objetivos_infectados': infectados_objetivos,
+        'objetivos_en_peligro': en_peligro
     }
 
 eel.start('index.html', size=(1000, 800))

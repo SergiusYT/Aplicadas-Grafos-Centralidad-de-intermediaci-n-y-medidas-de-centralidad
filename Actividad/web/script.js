@@ -23,6 +23,15 @@ async function cargarGrafo() {
             eel.actualizar_posicion(id, position.x, position.y);
         }
     });
+
+    // ✅ Nuevo evento: al hacer click en un nodo, colocar su id en el input
+    network.on("click", function (params) {
+        if (params.nodes.length > 0) {
+            const id = params.nodes[0];
+            document.getElementById('nodoBloquear').value = id;
+        }
+    });
+
     
 }
 
@@ -135,9 +144,13 @@ async function actualizarEstadisticas() {
         🦠 Infectados: ${data.infectados} <br>
         🔒 Bloqueados: ${data.bloqueados} <br>
         🏆 Puntuación: ${data.puntuacion} <br>
-        🎯 Nodo crítico: ${data.nodo_critico}
+        ⚠️ <b>Advertencias:</b><br>
+        ${data.objetivos_infectados.length > 0 ? "❌ Objetivos hackeados: " + data.objetivos_infectados.join(", ") + "<br>" : ""}
+        ${data.objetivos_en_peligro.length > 0 ? "⚠️ Objetivos en peligro: " + data.objetivos_en_peligro.join(", ") + "<br>" : ""}
+        ${data.objetivos_infectados.length === 0 && data.objetivos_en_peligro.length === 0 ? "✅ Ningún objetivo en peligro actualmente." : ""}
     `;
 }
+
 
 async function mostrarCentralidades() {
     const data = await eel.obtener_centralidades()();
@@ -166,17 +179,26 @@ async function autoPaso() {
         proteccionNodo(nodo);
     }
 
-    // Se han detonado las condiciones de hackeo o detención
-    if (resultado === "hackeo") {
-        alert("🔥 ¡El hacker llegó al objetivo!");
-        clearInterval(propagacion);  // Detenemos la propagación si ya sucedió
-    } else if (resultado === "detenido") {
-        alert("✅ ¡Has detenido al hacker!");
-        clearInterval(propagacion);  // Detenemos la propagación si fue detenido
+    // Mostrar alertas si ganó o perdió
+    if (resultado.startsWith("todos_infectados")) {
+        alert("❌ Todos los servidores críticos fueron infectados. ¡Hackeo exitoso!");
+        clearInterval(propagacion);
+    } else if (resultado.startsWith("detenido")) {
+        const objetivosSalvados = resultado.split(":")[1];
+        alert("✅ Has detenido la propagación. Objetivos protegidos: " + objetivosSalvados);
+        clearInterval(propagacion);
+    } else {
+        // 👉 Solo reiniciar si NO terminó el juego
+        clearInterval(propagacion);
+        propagacion = setInterval(async () => {
+            await autoPaso();
+            await actualizarEstadisticas();
+        }, 20000); // Reinicia el contador
     }
 
     document.getElementById('nodoBloquear').value = '';
 }
+
 
 // Función para marcar un nodo como protegido
 function proteccionNodo(id) {
@@ -191,9 +213,16 @@ function proteccionNodo(id) {
 
 // Cambiar la función paso para solo ejecutar lo necesario
 async function paso() {
+    const nodo = document.getElementById('nodoBloquear').value.toUpperCase();
+
+    if (nodo) {
+        proteccionNodo(nodo);  // 🔒 Aplicar protección visual inmediata
+    }
+
     await actualizarColores();
     await actualizarEstadisticas();
 }
+
 
 window.onload = () => {
     cargarGrafo();
@@ -201,6 +230,6 @@ window.onload = () => {
     propagacion = setInterval(async () => {
         await autoPaso();
         await actualizarEstadisticas();
-    }, 5000); // Cada 5 segundos
+    }, 20000); // Cada 20 segundos
 };
 

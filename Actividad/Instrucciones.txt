@@ -1,0 +1,36 @@
+==============================
+ACTIVIDAD: "Atrapa al Hacker"
+==============================
+
+Caso de la vida real (simulación):
+
+Eres parte del equipo de ciberseguridad de una empresa internacional. Un hacker ha logrado infiltrarse en la red interna y está propagando un malware diseñado para robar información confidencial.
+
+Tu misión es detener la propagación antes de que infecte los servidores críticos (objetivos), que contienen bases de datos sensibles de clientes y transacciones.
+
+Cada turno puedes bloquear un servidor para evitar que el malware lo utilice como puente. El hacker continuará propagándose automáticamente a través de la red.
+
+---
+
+📊 Tabla de puntajes:
+
+| Acción                                       | Puntaje obtenido                    |
+|----------------------------------------------|-------------------------------------|
+| ✅ Bloquear nodo con ALTA intermediación     | +10 puntos                          |
+| ❌ Bloquear nodo con BAJA intermediación     | -5 puntos                           |
+| 🔥 1 objetivo infectado                      | -10 puntos                          |
+| 🔥 2 objetivos infectados                    | -20 puntos                          |
+| 🔥 3 objetivos infectados                    | -30 puntos                          |
+| 💥 Infectar los 3 objetivos                  | -30 puntos extra y TERMINA el juego |
+| 🛡️ Proteger 1 objetivo (detener propagación) | +15 puntos                          |
+| 🛡️ Proteger 2 objetivos (detener propagación)| +30 puntos                          |
+| 🛡️ Proteger 3 objetivos (detener propagación)| +45 puntos                          |
+
+*Los puntos se suman o restan al puntaje actual al momento de ocurrir la acción.*
+
+---
+
+🌟 Meta:
+
+Lograr la máxima puntuación posible bloqueando estratégicamente los nodos y evitando que el hacker infecte los servidores críticos.
+
